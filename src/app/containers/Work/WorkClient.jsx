@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { AiFillEye, AiFillGithub } from 'react-icons/ai';
 import { motion } from 'framer-motion';
@@ -10,13 +10,14 @@ const WorkClient = ({ works }) => {
   const [filterWork, setFilterWork] = useState(works);
   const [activeFilter, setActiveFilter] = useState('All');
   const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
+  const [hoveredItem, setHoveredItem] = useState(null); // Track the currently hovered item
 
   const handleWorkFilter = (item) => {
     setActiveFilter(item);
-    setAnimateCard([{ y: 100, opacity: 0 }]);
+    setAnimateCard({ y: 100, opacity: 0 });
 
     setTimeout(() => {
-      setAnimateCard([{ y: 0, opacity: 1 }]);
+      setAnimateCard({ y: 0, opacity: 1 });
 
       if (item === 'All') {
         setFilterWork(works);
@@ -25,9 +26,15 @@ const WorkClient = ({ works }) => {
       }
     }, 500);
   };
+  const handleTouchEnd = () => {
+    setTimeout(() => {
+      setHoveredItem(null); 
+    }, 2000); // 
+  };
+
   return (
     <>
-      <h2 className="head-text">My Creative <span>Portfolio</span> </h2>
+      <h2 className="head-text">My Creative <span>Portfolio</span></h2>
 
       <div className="app__work-filter">
         {['UI/UX', 'Web App', 'Mobile App', 'React JS', 'All'].map((item, index) => (
@@ -52,17 +59,15 @@ const WorkClient = ({ works }) => {
               <img src={urlFor(work.imgUrl)} alt={work.name} />
 
               <motion.div
-                //  initial={{ opacity: 0 }} 
-                // whileHover={{ opacity: 1 }}
-                // transition={{ duration: 0.25, ease: 'easeInOut', staggerChildren: 0.5 }}
-                className="app__work-hover app__flex"
+                className={`app__work-hover app__flex ${hoveredItem === index ? 'active' : ''}`} 
+                onMouseEnter={() => setHoveredItem(index)} 
+                onMouseLeave={() => setHoveredItem(null)} 
+                onTouchStart={() => setHoveredItem(index)} 
+                onTouchEnd={handleTouchEnd}
               >
                 <a href={work.projectLink} target="_blank" rel="noreferrer">
                   <motion.div
-                    
-                    // whileInView={{ scale: [0, 1] }}
                     whileHover={{ scale: [1, 0.90] }}
-                    // transition={{ duration: 0.25 }}
                     className="app__flex"
                   >
                     <AiFillEye />
@@ -70,9 +75,7 @@ const WorkClient = ({ works }) => {
                 </a>
                 <a href={work.codeLink} target="_blank" rel="noreferrer">
                   <motion.div
-                    // whileInView={{ scale: [0, 1] }}
                     whileHover={{ scale: [1, 0.90] }}
-                    // transition={{ duration: 0.25 }}
                     className="app__flex"
                   >
                     <AiFillGithub />
@@ -97,7 +100,7 @@ const WorkClient = ({ works }) => {
 };
 
 export default AppWrap(
-    MotionWrap( WorkClient, 'app__works'),
-    'work',
-    'app__primarybg',);
-   
+  MotionWrap(WorkClient, 'app__works'),
+  'work',
+  'app__primarybg'
+);

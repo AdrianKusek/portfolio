@@ -31,6 +31,13 @@ const WorkClient = ({ works }) => {
       setHoveredItem(null); 
     }, 2000); // 
   };
+  const handleTouchStart = (index) => {
+    if (hoveredItem === index) {
+      setHoveredItem(null); // 
+    } else {
+      setHoveredItem(index); //
+    }
+  };
 
   return (
     <>
@@ -62,13 +69,14 @@ const WorkClient = ({ works }) => {
                 className={`app__work-hover app__flex ${hoveredItem === index ? 'active' : ''}`} 
                 onMouseEnter={() => setHoveredItem(index)} 
                 onMouseLeave={() => setHoveredItem(null)} 
-                onTouchStart={() => setHoveredItem(index)} 
+                onTouchStart={() => handleTouchStart(index)}
                 onTouchEnd={handleTouchEnd}
               >
                 <a href={work.projectLink} target="_blank" rel="noreferrer">
                   <motion.div
                     whileHover={{ scale: [1, 0.90] }}
                     className="app__flex"
+                    onClick={() => setHoveredItem(null)} 
                   >
                     <AiFillEye />
                   </motion.div>
@@ -77,6 +85,7 @@ const WorkClient = ({ works }) => {
                   <motion.div
                     whileHover={{ scale: [1, 0.90] }}
                     className="app__flex"
+                    onClick={() => setHoveredItem(null)} 
                   >
                     <AiFillGithub />
                   </motion.div>
